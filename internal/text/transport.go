@@ -24,7 +24,6 @@ type errorer interface {
 // endpoints.
 func MakeHTTPHandler(ts TextServicer) http.Handler {
 	r := mux.NewRouter()
-
 	r.Methods("POST").Path("/sms/send").Handler(httptransport.NewServer(
 		makeSendOverSMSGateway(ts),
 		decodeSendOverSMSGatewayRequest,
@@ -39,18 +38,19 @@ func decodeSendOverSMSGatewayRequest(_ context.Context, r *http.Request) (reques
 	if e := json.NewDecoder(r.Body).Decode(&req); e != nil {
 		return nil, ErrBadRequest
 	}
+
 	return req, nil
 }
 
 // Handle the encoding of response data post endpoint logic.
 func encodeResponse(ctx context.Context, w http.ResponseWriter, response interface{}) error {
 	if e, ok := response.(errorer); ok && e.error() != nil {
-		// Not a Go kit transport error, but a business-logic error.
-		// Provide those as HTTP errors.
 		encodeError(ctx, e.error(), w)
 		return nil
 	}
+
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+
 	return json.NewEncoder(w).Encode(response)
 }
 
