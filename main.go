@@ -16,7 +16,7 @@ import (
 
 type config struct {
 	ServiceHostname string `env:"BELL_HOSTNAME" envDefault:"127.0.0.1"`
-	ServicePort     int    `env:"BELL_PORT" envDefault:"8080"`
+	ServicePort     int    `env:"BELL_PORT" envDefault:"8099"`
 	Email           string `env:"BELL_EMAIL"`
 	Password        string `env:"BELL_EMAIL_PWD"`
 }
